@@ -48,22 +48,19 @@ def main():
     for p in products   
     ]
  
-    print("Generating shifts...")
+    
     shifts, roster = generate_shifts(employee_dicts, num_days=NUM_DAYS)
- 
-    print("Generating sales and sale items...")
+
     sales, sale_items = generate_sales(roster, product_dicts, num_days=NUM_DAYS)
  
-    print("Generating waste...")
+
     waste = generate_waste(sales, sale_items, product_dicts, num_days=NUM_DAYS)
  
     print(f"Generated: {len(shifts)} shifts, {len(sales)} sales, "
           f"{len(sale_items)} sale items, {len(waste)} waste events.")
  
-    print("Validating...")
     run_all_validations(stores, products, employees, shifts, sales, sale_items, waste)
  
-    print("Loading transactional data...")
     # store, products, and employees are already in the database from the   seed script, so we pass empty lists for these tables.
     load_all([], [], [], shifts, sales, sale_items, waste)
  

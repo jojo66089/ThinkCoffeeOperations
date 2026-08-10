@@ -3,7 +3,7 @@ import psycopg2
 from dotenv import load_dotenv
 from contextlib import contextmanager
 
-load_dotenv()  # Loading environment variables from .env file
+load_dotenv()  #  environment variables from .env file
 
 @contextmanager
 def get_db_connection():

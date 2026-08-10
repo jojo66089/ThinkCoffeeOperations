@@ -7,12 +7,13 @@ STORE_VOLUME_MULTIPLIER = {
     2: 1.25,   # Hudson Yards and its the busiest store because of commuters
     3: 1.00,   # Mercer 
 }
-#since labor is distributed based on opening/closing shifts, I created these time buckets to make these shifts more realistic.
-#There's a higher probability of sales during the opening hours and a lower probability during the closing hours, thus influencing the weight.
+
+
+#To simulate morning/afternoon patterns, more busy in the morning. 
 TIME_BUCKETS = [
     # (bucket_start, bucket_end, weight, period)
-    (time(7, 0), time(13, 30), 0.40, "opening"),
-    (time(14, 0), time(19, 00), 0.10, "closing"),
+    (time(7, 00), time(13, 30), 0.40, "Morning"),
+    (time(14, 00), time(19, 00), 0.10, "Afternoon "),
 ]
 #similrlly, to create a realistic distribution of sales for a coffee shop, there these weights in place to reflect accurate sales (like more coffee sales than pastries, etc)
 CATEGORY_WEIGHTS = {
@@ -24,7 +25,7 @@ CATEGORY_WEIGHTS = {
 }
  
 SIZE_WEIGHTS = {"12oz": 1, "16oz": 2}  #More large drinks are sold than small drinks, so the weight is higher for 16oz drinks.
-BASE_SALES_PER_DAY_PER_STORE = 140  # before the store volume multiplier
+BASE_SALES_PER_DAY_PER_STORE = 140  # before the store volume multiplier (a coffee shop in nyc would have around this many sales per day)
  
 def generate_shifts(employees, num_days=90, start_date=None):
     if start_date is None:
@@ -42,14 +43,14 @@ def generate_shifts(employees, num_days=90, start_date=None):
         shift_date = start_date + timedelta(days=day_offset)
         is_weekend = shift_date.weekday() >= 5
  
-        open_start = time(8, 0) if is_weekend else time(7, 0)
-        open_end = time(15, 0)
-        close_start = time(15, 0)
-        close_end = time(19, 0)
+        open_start = time(8, 00) if is_weekend else time(7, 00)
+        open_end = time(13, 30)
+        close_start = time(14, 00)
+        close_end = time(19, 00)
  
         for store_id, store_roster in employees_by_store.items():
             if len(store_roster) < 3:
-                continue  # not enough staff seeded for this store, skip
+                continue  # not enough staff for this store, so skip
  
             cook = next((e for e in store_roster if e["role"] == "Cook"), None)
             everyone_else = [e for e in store_roster if e is not cook]
@@ -71,6 +72,7 @@ def generate_shifts(employees, num_days=90, start_date=None):
             }
  
             # Closing crew cant be people who opened, if not enough, just pick from the whole roster.
+            #AND there is no cook in the opening shift.
             closing_pool = [e for e in store_roster if e["employee_id"] not in opener_ids]
             if len(closing_pool) < 2:
                 closing_pool = store_roster
@@ -172,9 +174,9 @@ def generate_sales(roster, products, num_days=90, start_date=None):
                 items, subtotal = _generate_items_for_sale(sale_id, products_by_category, next_item_id)
                 sale_items.extend(items)
  
-                tip_amount = round(subtotal * random.uniform(0.12, 0.22), 2)
+                tip_amount = round(subtotal * random.uniform(0.12, 0.22,0.00), 3)
                 # net_sales starts equal to subtotal here. 
-                # Refunds which will be adjusted with net_sales accordingly after.
+                # fefunds which will be adjusted with net_sales accordingly after.
                 net_sales = subtotal
  
                 sales.append((
@@ -184,7 +186,8 @@ def generate_sales(roster, products, num_days=90, start_date=None):
                 sale_id += 1
  
     return sales, sale_items
-WASTE_RATE = 0.02                  # ~2% of sale items become waste, because not every item sold is wasted, but some items are wasted due to spoilage, overproduction, etc.
+
+WASTE_RATE = 0.02                  # 2% of sale items become waste, because not every item sold is wasted, but some items are wasted due to spoilage, overproduction, etc.
 PRE_SALE_DROP_PROBABILITY = 0.06  #drops tied to no sale, like a customer changing their mind or a barista making a mistake.
 
 REASON_WEIGHTS = {"Remake": 0.70, "Customer Return": 0.30}
@@ -219,11 +222,11 @@ def generate_waste(sales, sale_items, products, num_days=90, start_date=None):
             product_id,
             quantity,
             reason,
-            sale_info["timestamp"],   # waste happens at the moment the item was made
+            sale_info["timestamp"], 
         ))
         waste_id += 1
  
-    # --- Waste with no sale behind it at all ---
+    #no sale waste
     store_ids = {s[1] for s in sales}
     for day_offset in range(num_days):
         shift_date = start_date + timedelta(days=day_offset)
@@ -237,7 +240,7 @@ def generate_waste(sales, sale_items, products, num_days=90, start_date=None):
  
             waste.append((
                 waste_id,
-                None,                       # sale_item_id: it never became a sale
+                None,                       # no sale_item_id because it never became a sale
                 store_id,
                 product["product_id"],
                 1,

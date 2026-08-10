@@ -1,39 +1,47 @@
 BEGIN;
+ 
 
-INSERT store (store_id, store_name) VALUES
-(1, 'Nomad'),
-(2, 'Hudson Yards'),
-(3, 'Greenwich Village')
+-- STORES
+
+INSERT INTO stores (name, neighborhood, opened_date) VALUES
+    ('Nomad', 'NoMad', '2019-06-03'),
+    ('Hudson Yards', 'Hudson Yards', '2021-02-15'),
+    ('Mercer', 'Greenwich Village', '2022-09-12');
+ 
+-- PRODUCTS
 
 INSERT INTO products (name, category, size, temperature, retail_price, cogs) VALUES
     -- Coffee and lattes
-    ('Coffee', 'Coffee', '12oz', 'Hot', 6.50, 0.85),
-    ('Coffee', 'Coffee', '16oz', 'Iced', 7.00, 1.05),
-     ('Latte', 'Latte', '12oz', 'Hot', 6.50, 1.35),
-     ('Latte', 'Latte', '16oz', 'Iced', 7.00, 1.65),
+    ('Coffee', 'Coffee', '12oz', 'hot', 6.50, 0.85),
+    ('Coffee', 'Coffee', '16oz', 'cold', 7.00, 1.05),
+    ('Latte', 'Latte', '12oz', 'hot', 6.50, 1.35),
+    ('Latte', 'Latte', '16oz', 'cold', 7.00, 1.65),
  
-    -- Teas (single serving size, brewed from 1 lb bags)
-    ('Black Tea', 'Tea', NULL, 5.00, 0.55),
-    ('Green Tea', 'Tea', NULL, 5.00, 0.55),
-    ('Earl Grey Tea', 'Tea', NULL, 5.00, 0.60),
-    ('Ginger Tea', 'Tea', NULL, 5.00, 0.60),
-    ('Orange Tea', 'Tea', NULL, 5.00, 0.55),
-    ('Peppermint Tea', 'Tea', NULL, 5.00, 0.55),
+    -- Teas 
+    ('Black Tea', 'Tea', NULL, 'hot', 5.00, 0.55),
+    ('Green Tea', 'Tea', NULL, 'hot', 5.00, 0.55),
+    ('Earl Grey Tea', 'Tea', NULL, 'hot', 5.00, 0.60),
+    ('Ginger Tea', 'Tea', NULL, 'hot', 5.00, 0.60),
+    ('Orange Tea', 'Tea', NULL, 'hot', 5.00, 0.55),
+    ('Peppermint Tea', 'Tea', NULL, 'hot', 5.00, 0.55),
  
-    -- Bottled beverages (sold individually from 12 packs)
-    ('Loop Juice', 'Bottled Beverage', NULL, 4.50, 1.80),
-    ('Saratoga Water', 'Bottled Beverage', NULL, 3.50, 1.20),
-    ('Orange Juice', 'Bottled Beverage', NULL, 4.75, 1.90),
+    -- Bottled beverages 
+    ('Loop Juice', 'Bottled Beverage', NULL, NULL, 4.50, 1.80),
+    ('Saratoga Water', 'Bottled Beverage', NULL, NULL, 3.50, 1.20),
+    ('Orange Juice', 'Bottled Beverage', NULL, NULL, 4.75, 1.90),
  
     -- Pastries
-    ('Plain Croissant', 'Pastry', NULL, 3.75, 1.00),
-    ('Almond Croissant', 'Pastry', NULL, 4.75, 1.55),
-    ('Ham and Swiss Croissant', 'Pastry', NULL, 5.50, 1.90),
-    ('Chocolate Chip Cookie', 'Pastry', NULL, 3.25, 0.78),
-    ('Blueberry Muffin', 'Pastry', NULL, 3.95, 0.78),
-    ('Banana Chocolate Chip Muffin', 'Pastry', NULL, 3.95, 0.78);
+    ('Plain Croissant', 'Pastry', NULL, NULL, 3.75, 1.00),
+    ('Almond Croissant', 'Pastry', NULL, NULL, 4.75, 1.55),
+    ('Ham and Swiss Croissant', 'Pastry', NULL, NULL, 5.50, 1.90),
+    ('Chocolate Chip Cookie', 'Pastry', NULL, NULL, 3.25, 0.78),
+    ('Blueberry Muffin', 'Pastry', NULL, NULL, 3.95, 0.78),
+    ('Banana Chocolate Chip Muffin', 'Pastry', NULL, NULL, 3.95, 0.78);
+ 
 
-    INSERT INTO employees (full_name, role, hourly_rate, hire_date, home_store_id) VALUES
+-- EMPLOYEES 
+
+INSERT INTO employees (full_name, role, hourly_rate, hire_date, home_store_id) VALUES
     -- Nomad (store_id 1)
     ('Maria Delgado', 'Shift Lead', 17.50, '2019-07-01', 1),
     ('Jason Ford', 'Cook', 18.50, '2019-08-12', 1),
@@ -54,5 +62,5 @@ INSERT INTO products (name, category, size, temperature, retail_price, cogs) VAL
     ('Grace Whitfield', 'Barista', 16.00, '2022-11-15', 3),
     ('Noah Feldman', 'Barista', 16.00, '2023-01-09', 3),
     ('Isabel Ortiz', 'Barista', 16.00, '2023-03-27', 3);
-
-    COMMIT;
+ 
+COMMIT;

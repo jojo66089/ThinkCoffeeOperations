@@ -3,7 +3,7 @@ from db import get_db_connection
 
 def insert_rows(cursor, table, columns, rows):
  if not rows:
-        print(f"  {table}: nothing to insert, skipping")
+        print(f"  {table}: skipping")
         return
  
  column_list = ", ".join(columns)
@@ -16,8 +16,7 @@ def load_all(stores, products, employees, shifts, sales, sale_items, waste):
     with get_db_connection() as conn:
         try:
             with conn.cursor() as cursor:
-                print("Loading data...")
- 
+    
                 insert_rows(cursor, "stores",
                             ["store_id", "name", "neighborhood", "opened_date"],
                             stores)
@@ -53,9 +52,9 @@ def load_all(stores, products, employees, shifts, sales, sale_items, waste):
                             waste)
  
             conn.commit()
-            print("Load complete, changes committed.")
+            print("finished loading.")
  
         except Exception as error:
             conn.rollback()
-            print(f"Load failed, rolled back. Error: {error}")
+            print(f"Load failed, Error: {error}")
             raise
