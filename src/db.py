@@ -7,7 +7,6 @@ load_dotenv()  # Loading environment variables from .env file
 
 @contextmanager
 def get_db_connection():
-    """Context manager for database connection."""
     conn = None
     try:
         conn = psycopg2.connect(

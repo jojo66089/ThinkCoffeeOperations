@@ -1,22 +1,20 @@
 import random
 from collections import defaultdict
-from datetime import date, time, timedelta
+from datetime import date, time, timedelta, datetime
 
 STORE_VOLUME_MULTIPLIER = {
     1: 0.85,   # Nomad
     2: 1.25,   # Hudson Yards and its the busiest store because of commuters
     3: 1.00,   # Mercer 
 }
-#Since labor is distributed based on opening/closing shifts, I created these time buckets to make these shifts more realistic.
+#since labor is distributed based on opening/closing shifts, I created these time buckets to make these shifts more realistic.
 #There's a higher probability of sales during the opening hours and a lower probability during the closing hours, thus influencing the weight.
 TIME_BUCKETS = [
     # (bucket_start, bucket_end, weight, period)
-    (time(7, 0), time(10, 0), 0.40, "opening"),
-    (time(10, 0), time(15, 0), 0.30, "opening"),
-    (time(15, 0), time(17, 0), 0.10, "closing"),
-    (time(17, 0), time(19, 0), 0.20, "closing"),
+    (time(7, 0), time(13, 30), 0.40, "opening"),
+    (time(14, 0), time(19, 00), 0.10, "closing"),
 ]
-#Similrlly, to create a realistic distribution of sales for a coffee shop, there these weights in place to reflect accurate sales (like more coffee sales than pastries, etc)
+#similrlly, to create a realistic distribution of sales for a coffee shop, there these weights in place to reflect accurate sales (like more coffee sales than pastries, etc)
 CATEGORY_WEIGHTS = {
     "Coffee": 0.35,
     "Latte": 0.35,
@@ -29,7 +27,7 @@ SIZE_WEIGHTS = {"12oz": 1, "16oz": 2}  #More large drinks are sold than small dr
 BASE_SALES_PER_DAY_PER_STORE = 140  # before the store volume multiplier
  
 def generate_shifts(employees, num_days=90, start_date=None):
-   if start_date is None:
+    if start_date is None:
         start_date = date.today() - timedelta(days=num_days)
  
     employees_by_store = defaultdict(list)
@@ -249,5 +247,3 @@ def generate_waste(sales, sale_items, products, num_days=90, start_date=None):
             waste_id += 1
  
     return waste
-
-
